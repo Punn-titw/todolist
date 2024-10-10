@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= content_for?(:title) ? yield(:title) : "My App" %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .todo-container {
+            background-color: white;
+            width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: #4b56f1;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .tab {
+            font-size: 16px;
+            padding-bottom: 10px;
+            cursor: pointer;
+            color: #666;
+        }
+        .tab.active {
+            color: #4b56f1;
+            border-bottom: 2px solid #4b56f1;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            border: 2px solid #4b56f1;
+            border-radius: 8px;
+            padding: 10px;
+            flex: 1;
+            margin-right: 10px;
+            outline: none;
+            font-size: 16px;
+        }
+        .lock-icon, .info-icon {
+            margin-right: 10px;
+        }
+        .create-todo {
+            padding: 10px 20px;
+            background-color: #4b56f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .todo-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .todo-actions {
+            display: flex;
+            align-items: center;
+        }
+        .todo-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="todo-container">
+    <h1>TODOS</h1>
+    <div class="tabs">
+        <div class="tab active">Incomplete</div>
+        <div class="tab">Complete</div>
+    </div>
+    <form action="/tasks" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <div class="input-group">
+        <input type="text" name="task[name]" placeholder="Name">
+        <span class="lock-icon">🔒</span>
+        <span class="info-icon">ℹ️</span>
+        <button type="submit" class="create-todo">Create Todo</button>
+    </div>
+  </form>
+
+  <!-- Task list, ensuring @tasks is available -->
+  <ul class="todo-list">
+    <% if @tasks.present? %>
+      <% @tasks.each do |task| %>
+        <li class="todo-item">
+          <span><%= task.name %></span>
+          <div class="todo-actions">
+            <form action="/tasks/<%= task.id %>" method="post" style="display:inline;">
+              <input type="hidden" name="_method" value="patch">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <input type="hidden" name="task[completed]" value="true">
+              <button type="submit">✔️</button>
+            </form>
+            <form action="/tasks/<%= task.id %>" method="post" style="display:inline;">
+              <input type="hidden" name="_method" value="delete">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button type="submit">🗑️</button>
+            </form>
+          </div>
+        </li>
+      <% end %>
+    <% else %>
+      <li>No tasks available</li>
+    <% end %>
+  </ul>
+</div>
+
+</body>
+</html>

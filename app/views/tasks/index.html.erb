@@ -1,0 +1,39 @@
+<div class="todo-container">
+  <h1>TODOS</h1>
+  <div class="tabs">
+    <div class="tab active">Incomplete</div>
+    <div class="tab">Complete</div>
+  </div>
+
+  <!-- Form for creating tasks -->
+  <form action="/tasks" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <div class="input-group">
+      <input type="text" name="task[name]" placeholder="Name">
+      <span class="lock-icon">🔒</span>
+      <span class="info-icon">ℹ️</span>
+      <button type="submit" class="create-todo">Create Todo</button>
+    </div>
+  </form>
+
+  <!-- Display tasks -->
+  <ul class="todo-list">
+    <% if @tasks.present? %> <!-- Corrected the if statement -->
+      <% @tasks.each do |task| %>
+        <li class="todo-item">
+          <span><%= task.name %></span>
+          <div class="todo-actions">
+            <!-- Buttons for editing and deleting tasks -->
+            <%= link_to "Mark as Complete", complete_task_path(task), method: :patch %> <!-- Mark as complete button -->
+            <%= link_to "Delete", task_path(task), method: :delete, data: { confirm: "Are you sure?" } %> <!-- Delete button -->
+          </div>
+        </li>
+      <% end %>
+    <% else %>
+      <li>ประวัติการพิมพ์: <%= simple_format(current_user.task_history) %></li> <!-- Display task history -->
+    <% end %>
+  </ul>
+
+  <!-- Link to view completed tasks -->
+  <%= link_to "View Completed Tasks", completed_tasks_path %>
+</div>

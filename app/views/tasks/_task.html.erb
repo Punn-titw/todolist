@@ -1,0 +1,20 @@
+<div id="<%= dom_id task %>">
+  <p>
+    <strong>Title:</strong>
+    <%= task.title %>
+  </p>
+
+  <p>
+    <strong>Body:</strong>
+    <%= task.body %>
+  </p>
+
+  <p>
+    <strong>Completed:</strong>
+    <%= simple_form_for(task, remote: true) do |f| %>
+      <%= f.input :completed, as :boolean, label: false %>
+    <% end %>  
+  </p>
+
+
+</div>
